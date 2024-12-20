@@ -1,50 +1,82 @@
-import { useState } from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import propTypes from "prop-types";
 
 export default function Login({ onLogin }) {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+  const validationSchema = Yup.object({
+    username: Yup.string()
+      .required("שדה חובה")
+      .matches(
+        /^[a-zA-Z0-9!@#$%^&*()_+=-]+$/,
+        "שם המשתמש חייב להכיל רק אותיות באנגלית ותווים מיוחדים"
+      ),
+    password: Yup.string()
+      .required("שדה חובה")
+      .min(7, "הסיסמה חייבת להיות לפחות באורך של 7 תווים")
+      .max(12, "הסיסמה חייבת להיות לא יותר מ-12 תווים")
+      .matches(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "הסיסמה חייבת להכיל לפחות תו מיוחד אחד"
+      )
+      .matches(/[A-Z]/, "הסיסמה חייבת להכיל לפחות אות אחת גדולה באנגלית")
+      .matches(/[0-9]/, "הסיסמה חייבת להכיל לפחות ספרה אחת"),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle login submission
-    onLogin(formData);
-  };
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      onLogin(values);
+    },
+  });
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>שם משתמש:</label>
+    <div className="container mt-5">
+      <form onSubmit={formik.handleSubmit} className="row g-3">
+        <div className="col-md-6">
+          <label className="form-label">שם משתמש:</label>
           <input
             type="text"
             name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
+            className={`form-control ${
+              formik.touched.username && formik.errors.username
+                ? "is-invalid"
+                : ""
+            }`}
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.username && formik.errors.username && (
+            <div className="invalid-feedback">{formik.errors.username}</div>
+          )}
         </div>
-        <div>
-          <label>סיסמה:</label>
+        <div className="col-md-6">
+          <label className="form-label">סיסמה:</label>
           <input
             type="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
+            className={`form-control ${
+              formik.touched.password && formik.errors.password
+                ? "is-invalid"
+                : ""
+            }`}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.password && formik.errors.password && (
+            <div className="invalid-feedback">{formik.errors.password}</div>
+          )}
         </div>
-        <button type="submit">כניסה</button>
+        <div className="col-12">
+          <button type="submit" className="btn btn-primary">
+            כניסה
+          </button>
+        </div>
       </form>
     </div>
   );

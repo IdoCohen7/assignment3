@@ -11,7 +11,17 @@ function App() {
   const [userList, setList] = useState([]);
 
   const registerUser = (newUser) => {
+    if (
+      userList.some(
+        (u) => u.username === newUser.username || u.email === newUser.email
+      )
+    ) {
+      alert("יש כבר משתמש רשום עם אימייל או שם משתמש זה");
+      return;
+    }
     setList([...userList, newUser]);
+    alert("נרשמת בהצלחה!");
+    navigate("/login");
   };
 
   const loginUser = (user) => {
