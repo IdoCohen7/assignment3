@@ -13,6 +13,7 @@ export default function Register({ onAddUser }) {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
+    profilePicture: null,
     city: "",
     street: "",
     number: "",
@@ -20,14 +21,25 @@ export default function Register({ onAddUser }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === "profilePicture") {
+      setFormData({
+        ...formData,
+        profilePicture: e.target.files[0], // Access the selected file
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.password !== formData.passwordConfirm) {
+      alert("הסיסמאות לא תואמות");
+      return;
+    }
     onAddUser(formData);
     setFormData({
       email: "",
@@ -37,6 +49,7 @@ export default function Register({ onAddUser }) {
       firstName: "",
       lastName: "",
       dateOfBirth: "",
+      profilePicture: null,
       city: "",
       street: "",
       number: "",
@@ -99,7 +112,7 @@ export default function Register({ onAddUser }) {
           />
         </div>
         <div>
-          <label>ם משפחה:</label>
+          <label>שם משפחה:</label>
           <input
             type="text"
             name="lastName"
@@ -116,6 +129,15 @@ export default function Register({ onAddUser }) {
             value={formData.dateOfBirth}
             onChange={handleChange}
             required
+          />
+        </div>
+        <div>
+          <label>תמונת פרופיל:</label>
+          <input
+            type="file"
+            name="profilePicture"
+            accept="image/jpeg, image/jpg"
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -141,7 +163,7 @@ export default function Register({ onAddUser }) {
         <div>
           <label>מספר בית:</label>
           <input
-            type="text"
+            type="number"
             name="number"
             value={formData.number}
             onChange={handleChange}
