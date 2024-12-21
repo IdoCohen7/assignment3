@@ -5,21 +5,21 @@ import propTypes from "prop-types";
 export default function Login({ onLogin }) {
   const validationSchema = Yup.object({
     username: Yup.string()
-      .required("שדה חובה")
+      .required("Required field")
       .matches(
         /^[a-zA-Z0-9!@#$%^&*()_+=-]+$/,
-        "שם המשתמש חייב להכיל רק אותיות באנגלית ותווים מיוחדים"
+        "Username must contain only English letters and special characters"
       ),
     password: Yup.string()
-      .required("שדה חובה")
-      .min(7, "הסיסמה חייבת להיות לפחות באורך של 7 תווים")
-      .max(12, "הסיסמה חייבת להיות לא יותר מ-12 תווים")
+      .required("Required field")
+      .min(7, "Password must be at least 7 characters long")
+      .max(12, "Password must be no more than 12 characters long")
       .matches(
         /[!@#$%^&*(),.?":{}|<>]/,
-        "הסיסמה חייבת להכיל לפחות תו מיוחד אחד"
+        "Password must contain at least one special character"
       )
-      .matches(/[A-Z]/, "הסיסמה חייבת להכיל לפחות אות אחת גדולה באנגלית")
-      .matches(/[0-9]/, "הסיסמה חייבת להכיל לפחות ספרה אחת"),
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number"),
   });
 
   const formik = useFormik({
@@ -37,7 +37,7 @@ export default function Login({ onLogin }) {
     <div className="container mt-5">
       <form onSubmit={formik.handleSubmit} className="row g-3">
         <div className="col-md-6">
-          <label className="form-label">שם משתמש:</label>
+          <label className="form-label">Username:</label>
           <input
             type="text"
             name="username"
@@ -55,7 +55,7 @@ export default function Login({ onLogin }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">סיסמה:</label>
+          <label className="form-label">Password:</label>
           <input
             type="password"
             name="password"
@@ -74,7 +74,7 @@ export default function Login({ onLogin }) {
         </div>
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
-            כניסה
+            Login
           </button>
         </div>
       </form>

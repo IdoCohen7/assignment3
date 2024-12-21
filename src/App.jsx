@@ -16,11 +16,11 @@ function App() {
         (u) => u.username === newUser.username || u.email === newUser.email
       )
     ) {
-      alert("יש כבר משתמש רשום עם אימייל או שם משתמש זה");
+      alert("There is already a registered user with this email or username");
       return;
     }
     setList([...userList, newUser]);
-    alert("נרשמת בהצלחה!");
+    alert("You have successfully registered");
     navigate("/login");
   };
 
@@ -32,9 +32,9 @@ function App() {
       if (foundUser) {
         setUser(foundUser);
         navigate("/");
-        alert("ברוך הבא " + foundUser.username);
+        alert("Welcome" + foundUser.username);
       } else {
-        alert("שם משתמש או סיסמה שגויים");
+        alert("Incorrect username or password");
       }
     }
   };
@@ -67,10 +67,9 @@ function App() {
 
   return (
     <>
-      <h2>המשחק האהוב עליי</h2>
-      <button className="logout-bttn">התנתקות</button>
-      <Link to="/">בית</Link> | <Link to="/login">התחברות</Link> |{" "}
-      <Link to="/register">הרשמה</Link>
+      <button className="logout-bttn">Logout</button>
+      <Link to="/">Home</Link> | <Link to="/login">Login</Link> |{" "}
+      <Link to="/register">Register</Link>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route

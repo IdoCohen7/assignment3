@@ -4,54 +4,58 @@ import propTypes from "prop-types";
 
 export default function Register({ onAddUser }) {
   const validationSchema = Yup.object({
-    email: Yup.string().email("כתובת האימייל אינה תקינה").required("שדה חובה"),
+    email: Yup.string().email("Invalid email address").required("Required field"),
     username: Yup.string()
       .matches(
         /^[a-zA-Z0-9!@#$%^&*()_+=-]+$/,
-        "שם המשתמש חייב להכיל רק אותיות באנגלית ותווים מיוחדים"
+        "Username must only contain letters, numbers, and special characters"
       )
-      .required("שדה חובה"),
+      .required("Required field"),
     password: Yup.string()
-      .min(7, "הסיסמה חייבת להיות לפחות באורך של 7 תווים")
-      .max(12, "הסיסמה חייבת להיות לא יותר מ-12 תווים")
+      .min(7, "Password must be at least 7 characters long")
+      .max(12, "Password must be no longer than 12 characters")
       .matches(
         /[!@#$%^&*(),.?":{}|<>]/,
-        "הסיסמה חייבת להכיל לפחות תו מיוחד אחד"
+        "Password must contain at least one special character"
       )
-      .matches(/[A-Z]/, "הסיסמה חייבת להכיל לפחות אות אחת גדולה באנגלית")
-      .matches(/[0-9]/, "הסיסמה חייבת להכיל לפחות ספרה אחת")
-      .required("שדה חובה"),
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
+      .required("Required field"),
     passwordConfirm: Yup.string()
-      .oneOf([Yup.ref("password"), null], "הסיסמאות אינן תואמות")
-      .required("שדה חובה"),
+      .oneOf([Yup.ref("password"), null], "Passwords do not match")
+      .required("Required field"),
     firstName: Yup.string()
-      .matches(/^[a-zA-Zא-ת-]+$/, "השם הפרטי יכול להכיל אותיות בלבד")
-      .required("שדה חובה"),
+      .matches(/^[a-zA-Z-]+$/, "First name can only contain letters")
+      .required("Required field"),
     lastName: Yup.string()
-      .matches(/^[a-zA-Zא-ת-]+$/, "שם המשפחה יכול להכיל אותיות בלבד")
-      .required("שדה חובה"),
+      .matches(/^[a-zA-Z-]+$/, "Last name can only contain letters")
+      .required("Required field"),
     dateOfBirth: Yup.date()
-      .required("שדה חובה")
-      .test("is-of-age", "תאריך לידה לא תקין", function (value) {
+      .required("Required field")
+      .test("is-of-age", "Invalid date of birth", function (value) {
         if (!value) return false;
         const today = new Date();
         const birthDate = new Date(value);
-        const age = new Date(today - birthDate).getUTCFullYear() - 1970;
-        return age >= 18 && age < 120;
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--; 
+        }
+
       }),
     profilePicture: Yup.mixed()
       .nullable()
-      .test("fileType", "הקובץ חייב להיות jpg או jpeg", (value) => {
+      .test("fileType", "File must be jpg or jpeg", (value) => {
         return !value || ["image/jpeg", "image/jpg"].includes(value.type);
       }),
-    city: Yup.string().required("שדה חובה"),
+    city: Yup.string().required("Required field"),
     street: Yup.string()
-      .matches(/^[\u0590-\u05fe]+$/, "הרחוב חייב להיות בעברית בלבד")
-      .required("שדה חובה"),
+      .matches(/^[a-zA-Z\u0590-\u05fe-]+$/, "Street must contain only letters")
+      .required("Required field"),
     number: Yup.number()
-      .min(0, "מספר הבית לא יכול להיות שלילי")
-      .typeError("המספר חייב להיות ערך נומרי")
-      .required("שדה חובה"),
+      .min(0, "House number cannot be negative")
+      .typeError("Number must be a numeric value")
+      .required("Required field"),
   });
 
   const formik = useFormik({
@@ -78,7 +82,7 @@ export default function Register({ onAddUser }) {
     <div className="container mt-5">
       <form onSubmit={formik.handleSubmit} className="row g-3">
         <div className="col-md-6">
-          <label className="form-label">אימייל:</label>
+          <label className="form-label">Email:</label>
           <input
             type="email"
             name="email"
@@ -92,7 +96,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">שם משתמש:</label>
+          <label className="form-label">Username:</label>
           <input
             type="text"
             name="username"
@@ -106,7 +110,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">סיסמה:</label>
+          <label className="form-label">Password:</label>
           <input
             type="password"
             name="password"
@@ -120,7 +124,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">אישור סיסמה:</label>
+          <label className="form-label">Confirm Password:</label>
           <input
             type="password"
             name="passwordConfirm"
@@ -134,7 +138,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">שם פרטי:</label>
+          <label className="form-label">First Name:</label>
           <input
             type="text"
             name="firstName"
@@ -148,7 +152,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">שם משפחה:</label>
+          <label className="form-label">Last Name:</label>
           <input
             type="text"
             name="lastName"
@@ -162,7 +166,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">תאריך לידה:</label>
+          <label className="form-label">Date of Birth:</label>
           <input
             type="date"
             name="dateOfBirth"
@@ -176,7 +180,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">תמונת פרופיל:</label>
+          <label className="form-label">Profile Picture:</label>
           <input
             type="file"
             name="profilePicture"
@@ -191,7 +195,7 @@ export default function Register({ onAddUser }) {
           )}
         </div>
         <div className="col-md-6">
-          <label className="form-label">עיר:</label>
+          <label className="form-label">City:</label>
           <input
             type="text"
             name="city"
@@ -199,21 +203,21 @@ export default function Register({ onAddUser }) {
             value={formik.values.city}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            list="city-list" // תווסף את רשימת הערים האוטומטית
+            list="city-list" // Add automatic city list
           />
           <datalist id="city-list">
-            <option value="אילת" />
-            <option value="באר שבע" />
-            <option value="הוד השרון" />
-            <option value="חדרה" />
-            <option value="חיפה" />
-            <option value="ירושלים" />
-            <option value="מודיעין" />
-            <option value="נתניה" />
-            <option value="פתח תקווה" />
-            <option value="רמת גן" />
-            <option value="רמת השרון" />
-            <option value="תל אביב" />
+            <option value="Eilat" />
+            <option value="Beersheba" />
+            <option value="Hod Hasharon" />
+            <option value="Hadera" />
+            <option value="Haifa" />
+            <option value="Jerusalem" />
+            <option value="Modi'in" />
+            <option value="Netanya" />
+            <option value="Petah Tikva" />
+            <option value="Ramat Gan" />
+            <option value="Ramat Hasharon" />
+            <option value="Tel Aviv" />
           </datalist>
           {formik.touched.city && formik.errors.city && (
             <div className="text-danger">{formik.errors.city}</div>
@@ -221,7 +225,7 @@ export default function Register({ onAddUser }) {
         </div>
 
         <div className="col-md-6">
-          <label className="form-label">רחוב:</label>
+          <label className="form-label">Street:</label>
           <input
             type="text"
             name="street"
@@ -236,7 +240,7 @@ export default function Register({ onAddUser }) {
         </div>
 
         <div className="col-md-6">
-          <label className="form-label">מספר בית:</label>
+          <label className="form-label">House Number:</label>
           <input
             type="number"
             name="number"
@@ -252,7 +256,7 @@ export default function Register({ onAddUser }) {
 
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
-            נרשם
+            Register
           </button>
         </div>
       </form>
