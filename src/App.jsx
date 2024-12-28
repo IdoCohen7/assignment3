@@ -140,10 +140,10 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile loginUser={loginUser} logoutUser={logoutUser} />} />
         <Route path="/register" element={<Register onAddUser={registerUser} />} />
         <Route path="/login" element={<Login onLogin={loginUser} />} />
-        <Route path="/editDetails" element={<EditDetails />} />
+        <Route path="/editDetails" element={<EditDetails  loginUser={loginUser} logoutUser={logoutUser}/>} />
         <Route path="/systemAdmin" element={<SystemAdmin />} />
       </Routes>
     </>

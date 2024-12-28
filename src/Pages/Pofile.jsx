@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Profile({ logoutUser }) {
+export default function Profile({ loginUser, logoutUser }) {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -18,11 +18,12 @@ export default function Profile({ logoutUser }) {
     navigate('/edit-details');
   };
 
+
   return (
     <div className="profile-card">
       <div className="profile-header">
         <img
-          src={user.profilePicture}
+           src={user?.profilePicture || '/default-image.png'}
           alt="Profile"
           className="profile-picture"
         />
