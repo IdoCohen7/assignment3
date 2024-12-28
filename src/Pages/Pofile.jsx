@@ -23,13 +23,13 @@ export default function Profile({ loginUser, logoutUser }) {
     <div className="profile-card">
       <div className="profile-header">
         <img
-           src={user?.profilePicture || '/default-image.png'}
+          src={user?.profilePicture || '/default-image.png'}
           alt="Profile"
           className="profile-picture"
         />
         <h1>שלום {user.username}!</h1>
       </div>
-      
+
       <div className="profile-details">
         <p><strong>שם פרטי:</strong> {user.firstName}</p>
         <p><strong>שם משפחה:</strong> {user.lastName}</p>
@@ -41,19 +41,19 @@ export default function Profile({ loginUser, logoutUser }) {
         <p><strong>מספר בית:</strong> {user.number}</p>
       </div>
 
-      {/* קישור למשחק */}
+      {/* favorite game*/}
       <div className="game-link">
         <a
           href="https://www.izzygames.com/fireboy-and-watergirl-1-t3534.html?gad_source=1&gclid=Cj0KCQiAvbm7BhC5ARIsAFjwNHt5lvUuLpq5UINpqpLZxIFmBUlRaguJiGhuPnMMPGS3M3lMl2lfnhAaAmzAEALw_wcB"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-game"
+          className="btn-game" /* הכפתור שכולל את התמונה כרקע */
         >
-          קישור למשחק אונליין האהוב עלינו
+          <span>קישור למשחק האהוב עלינו</span> {/* טקסט הכפתור */}
         </a>
       </div>
 
-      {/* כפתורים */}
+
       <div className="buttons">
         <button onClick={logoutUser} className="btn btn-danger">
           <i className="fas fa-sign-out-alt"></i> התנתק
