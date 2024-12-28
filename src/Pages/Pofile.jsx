@@ -60,13 +60,13 @@ export default function Profile({ user, logoutUser }) {
           href="https://www.izzygames.com/fireboy-and-watergirl-1-t3534.html?gad_source=1&gclid=Cj0KCQiAvbm7BhC5ARIsAFjwNHt5lvUuLpq5UINpqpLZxIFmBUlRaguJiGhuPnMMPGS3M3lMl2lfnhAaAmzAEALw_wcB"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-game"
+          className="btn-game" /* הכפתור שכולל את התמונה כרקע */
         >
-          קישור למשחק אונליין האהוב עלינו
+          <span>קישור למשחק האהוב עלינו</span> {/* טקסט הכפתור */}
         </a>
       </div>
 
-      {/* כפתורים */}
+
       <div className="buttons">
         <button onClick={handleLogout} className="btn btn-danger">
           <i className="fas fa-sign-out-alt"></i> התנתק

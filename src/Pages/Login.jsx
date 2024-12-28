@@ -34,6 +34,8 @@ export default function Login({ onLogin }) {
   });
 
   return (
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">התחברות</h1>
     <form onSubmit={formik.handleSubmit} className="row g-3">
       <div className="col-md-6">
         <label htmlFor="username" className="form-label">שם משתמש:</label>
@@ -73,6 +75,7 @@ export default function Login({ onLogin }) {
         </button>
       </div>
     </form>
+    </div>
   );
 }
 

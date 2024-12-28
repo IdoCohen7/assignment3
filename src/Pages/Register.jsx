@@ -105,6 +105,8 @@ export default function Register({ onAddUser }) {
   }, []);
 
   return (
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">הרשמה</h1>
     <form onSubmit={formik.handleSubmit} className="row g-3 container-fluid">
       <div className="col-md-4">
         <label htmlFor="email" className="form-label">
@@ -208,7 +210,6 @@ export default function Register({ onAddUser }) {
           </div>
         )}
       </div>
-
       <div className="col-md-4">
         <label htmlFor="firstName" className="form-label">
           שם פרטי:
@@ -352,7 +353,6 @@ export default function Register({ onAddUser }) {
           <div className="invalid-feedback">{formik.errors.city}</div>
         )}
       </div>
-
       <div className="col-md-4">
         <label htmlFor="street" className="form-label">
           רחוב:
@@ -407,6 +407,7 @@ export default function Register({ onAddUser }) {
         </button>
       </div>
     </form>
+  </div>
   );
 }
 
