@@ -7,7 +7,7 @@ export default function Profile({ user, logoutUser }) {
   if (!user) {
     return (
       <div className="profile-card">
-        <h3>נא להתחבר כדי לראות את פרופילך</h3>
+        <p style={{ textAlign: "center" }}>נא להתחבר כדי לראות את פרופילך</p>
       </div>
     );
   }
@@ -16,7 +16,6 @@ export default function Profile({ user, logoutUser }) {
     logoutUser(user.email);
   };
 
-  console.log(user);
   return (
     <div className="profile-card">
       <div className="profile-header">
@@ -30,13 +29,7 @@ export default function Profile({ user, logoutUser }) {
 
       <div className="profile-details">
         <p>
-          <strong>שם פרטי:</strong> {user.firstName}
-        </p>
-        <p>
-          <strong>שם משפחה:</strong> {user.lastName}
-        </p>
-        <p>
-          <strong>שם משתמש:</strong> {user.username}
+          <strong>שם מלא:</strong> {user.firstName + " " + user.lastName}
         </p>
         <p>
           <strong>אימייל:</strong> {user.email}
@@ -45,13 +38,8 @@ export default function Profile({ user, logoutUser }) {
           <strong>תאריך לידה:</strong> {user.dateOfBirth}
         </p>
         <p>
-          <strong>עיר:</strong> {user.city}
-        </p>
-        <p>
-          <strong>רחוב:</strong> {user.street}
-        </p>
-        <p>
-          <strong>מספר בית:</strong> {user.number}
+          <strong>כתובת:</strong>{" "}
+          {user.street + " " + user.number + ", " + user.city}
         </p>
       </div>
       {/* קישור למשחק */}
@@ -66,7 +54,6 @@ export default function Profile({ user, logoutUser }) {
         </a>
       </div>
 
-
       <div className="buttons">
         <button onClick={handleLogout} className="btn btn-danger">
           <i className="fas fa-sign-out-alt"></i> התנתק
@@ -74,7 +61,7 @@ export default function Profile({ user, logoutUser }) {
 
         <button
           onClick={() => {
-            navigate("/editDetails");
+            navigate("/editDetails", { state: { user } });
           }}
           className="btn btn-primary"
         >

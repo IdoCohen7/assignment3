@@ -1,8 +1,12 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom";
 
-export default function EditDetails({ user, onEdit }) {
+export default function EditDetails({ onEdit }) {
+  const { state } = useLocation();
+  const user = state.user;
+
   const validationSchema = Yup.object({
     firstName: Yup.string()
       .matches(/^[a-zA-Zא-ת-]+$/, "השם הפרטי יכול להכיל אותיות בלבד")
@@ -27,7 +31,10 @@ export default function EditDetails({ user, onEdit }) {
       }),
     city: Yup.string().required("שדה חובה"),
     street: Yup.string()
-      .matches(/^[\u0590-\u05fe]+$/, "הרחוב חייב להיות בעברית בלבד")
+      .matches(
+        /^[\u0590-\u05fe\s]+$/,
+        "הרחוב חייב להיות בעברית בלבד וכולל רווחים"
+      )
       .required("שדה חובה"),
     number: Yup.number()
       .min(0, "מספר הבית לא יכול להיות שלילי")
@@ -42,14 +49,14 @@ export default function EditDetails({ user, onEdit }) {
 
   const formik = useFormik({
     initialValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      username: user?.username || "",
-      dateOfBirth: user?.dateOfBirth || "",
-      city: user?.city || "",
-      street: user?.street || "",
-      number: user?.number || "",
-      profilePicture: user?.profilePicture || null,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      username: user.username || "",
+      dateOfBirth: user.dateOfBirth || "",
+      city: user.city || "",
+      street: user.street || "",
+      number: user.number || "",
+      profilePicture: user.profilePicture || null,
     },
     validationSchema,
     enableReinitialize: true,
