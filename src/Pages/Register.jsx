@@ -1,6 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import propTypes from "prop-types";
+import { useEffect } from "react";
 
 export default function Register({ onAddUser }) {
   const validationSchema = Yup.object({
@@ -74,14 +75,51 @@ export default function Register({ onAddUser }) {
     },
   });
 
+  const handleProfilePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // יצירת URL מקומי לתמונה
+      const imageUrl = URL.createObjectURL(file);
+      formik.setFieldValue("profilePicture", file); // שמירה בערך של Formik
+
+      // שמירת התמונה בזיכרון המקומי
+      localStorage.setItem("profilePicture", imageUrl);
+
+      // הצגת התמונה בתצוגה
+      const imgElement = document.getElementById("profileImagePreview");
+      imgElement.src = imageUrl;
+    }
+  };
+
+  const loadProfilePicture = () => {
+    const storedImageUrl = localStorage.getItem("profilePicture");
+    if (storedImageUrl) {
+      const imgElement = document.getElementById("profileImagePreview");
+      imgElement.src = storedImageUrl;
+    }
+  };
+
+  // לקרוא את הפונקציה loadProfilePicture כשנטען הדף
+  useEffect(() => {
+    loadProfilePicture();
+  }, []);
+
   return (
     <form onSubmit={formik.handleSubmit} className="row g-3 container-fluid">
       <div className="col-md-4">
-        <label htmlFor="email" className="form-label">אימייל:</label>
+        <label htmlFor="email" className="form-label">
+          אימייל:
+        </label>
         <input
           type="email"
           name="email"
-          className={`form-control ${formik.touched.email && !formik.errors.email ? 'is-valid' : formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.email && !formik.errors.email
+              ? "is-valid"
+              : formik.touched.email && formik.errors.email
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -90,15 +128,22 @@ export default function Register({ onAddUser }) {
         {formik.touched.email && formik.errors.email && (
           <div className="invalid-feedback">{formik.errors.email}</div>
         )}
-
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="username" className="form-label">שם משתמש:</label>
+        <label htmlFor="username" className="form-label">
+          שם משתמש:
+        </label>
         <input
           type="text"
           name="username"
-          className={`form-control ${formik.touched.username && !formik.errors.username ? 'is-valid' : formik.touched.username && formik.errors.username ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.username && !formik.errors.username
+              ? "is-valid"
+              : formik.touched.username && formik.errors.username
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.username}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -107,17 +152,27 @@ export default function Register({ onAddUser }) {
         {formik.touched.username && formik.errors.username && (
           <div className="invalid-feedback">{formik.errors.username}</div>
         )}
-        {formik.touched.username && !formik.errors.username && !formik.values.username && (
-          <div className="valid-feedback">Looks good!</div>
-        )}
+        {formik.touched.username &&
+          !formik.errors.username &&
+          !formik.values.username && (
+            <div className="valid-feedback">Looks good!</div>
+          )}
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="password" className="form-label">סיסמה:</label>
+        <label htmlFor="password" className="form-label">
+          סיסמה:
+        </label>
         <input
           type="password"
           name="password"
-          className={`form-control ${formik.touched.password && !formik.errors.password ? 'is-valid' : formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.password && !formik.errors.password
+              ? "is-valid"
+              : formik.touched.password && formik.errors.password
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -129,27 +184,45 @@ export default function Register({ onAddUser }) {
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="passwordConfirm" className="form-label">אישור סיסמה:</label>
+        <label htmlFor="passwordConfirm" className="form-label">
+          אישור סיסמה:
+        </label>
         <input
           type="password"
           name="passwordConfirm"
-          className={`form-control ${formik.touched.passwordConfirm && !formik.errors.passwordConfirm ? 'is-valid' : formik.touched.passwordConfirm && formik.errors.passwordConfirm ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.passwordConfirm && !formik.errors.passwordConfirm
+              ? "is-valid"
+              : formik.touched.passwordConfirm && formik.errors.passwordConfirm
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.passwordConfirm}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           id="passwordConfirm"
         />
         {formik.touched.passwordConfirm && formik.errors.passwordConfirm && (
-          <div className="invalid-feedback">{formik.errors.passwordConfirm}</div>
+          <div className="invalid-feedback">
+            {formik.errors.passwordConfirm}
+          </div>
         )}
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="firstName" className="form-label">שם פרטי:</label>
+        <label htmlFor="firstName" className="form-label">
+          שם פרטי:
+        </label>
         <input
           type="text"
           name="firstName"
-          className={`form-control ${formik.touched.firstName && !formik.errors.firstName ? 'is-valid' : formik.touched.firstName && formik.errors.firstName ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.firstName && !formik.errors.firstName
+              ? "is-valid"
+              : formik.touched.firstName && formik.errors.firstName
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.firstName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -161,11 +234,19 @@ export default function Register({ onAddUser }) {
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="lastName" className="form-label">שם משפחה:</label>
+        <label htmlFor="lastName" className="form-label">
+          שם משפחה:
+        </label>
         <input
           type="text"
           name="lastName"
-          className={`form-control ${formik.touched.lastName && !formik.errors.lastName ? 'is-valid' : formik.touched.lastName && formik.errors.lastName ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.lastName && !formik.errors.lastName
+              ? "is-valid"
+              : formik.touched.lastName && formik.errors.lastName
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.lastName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -177,11 +258,19 @@ export default function Register({ onAddUser }) {
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="dateOfBirth" className="form-label">תאריך לידה:</label>
+        <label htmlFor="dateOfBirth" className="form-label">
+          תאריך לידה:
+        </label>
         <input
           type="date"
           name="dateOfBirth"
-          className={`form-control ${formik.touched.dateOfBirth && !formik.errors.dateOfBirth ? 'is-valid' : formik.touched.dateOfBirth && formik.errors.dateOfBirth ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.dateOfBirth && !formik.errors.dateOfBirth
+              ? "is-valid"
+              : formik.touched.dateOfBirth && formik.errors.dateOfBirth
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.dateOfBirth}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -193,27 +282,52 @@ export default function Register({ onAddUser }) {
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="profilePicture" className="form-label">תמונת פרופיל:</label>
+        <label htmlFor="profilePicture" className="form-label">
+          תמונת פרופיל:
+        </label>
         <input
           type="file"
           name="profilePicture"
-          className={`form-control ${formik.touched.profilePicture && !formik.errors.profilePicture ? 'is-valid' : formik.touched.profilePicture && formik.errors.profilePicture ? 'is-invalid' : ''}`}
-          onChange={(e) =>
-            formik.setFieldValue("profilePicture", e.target.files[0])
-          }
+          className={`form-control ${
+            formik.touched.profilePicture && !formik.errors.profilePicture
+              ? "is-valid"
+              : formik.touched.profilePicture && formik.errors.profilePicture
+              ? "is-invalid"
+              : ""
+          }`}
+          onChange={handleProfilePictureChange}
           id="profilePicture"
         />
+        {formik.touched.profilePicture && formik.errors.profilePicture && (
+          <div className="invalid-feedback">{formik.errors.profilePicture}</div>
+        )}
+
+        {/* הצגת התמונה */}
+        <img
+          id="profileImagePreview"
+          alt="Profile Preview"
+          className="img-fluid"
+        />
+
         {formik.touched.profilePicture && formik.errors.profilePicture && (
           <div className="invalid-feedback">{formik.errors.profilePicture}</div>
         )}
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="city" className="form-label">עיר:</label>
+        <label htmlFor="city" className="form-label">
+          עיר:
+        </label>
         <input
           type="text"
           name="city"
-          className={`form-control ${formik.touched.city && !formik.errors.city ? 'is-valid' : formik.touched.city && formik.errors.city ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.city && !formik.errors.city
+              ? "is-valid"
+              : formik.touched.city && formik.errors.city
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.city}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -240,11 +354,19 @@ export default function Register({ onAddUser }) {
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="street" className="form-label">רחוב:</label>
+        <label htmlFor="street" className="form-label">
+          רחוב:
+        </label>
         <input
           type="text"
           name="street"
-          className={`form-control ${formik.touched.street && !formik.errors.street ? 'is-valid' : formik.touched.street && formik.errors.street ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.street && !formik.errors.street
+              ? "is-valid"
+              : formik.touched.street && formik.errors.street
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.street}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -256,11 +378,19 @@ export default function Register({ onAddUser }) {
       </div>
 
       <div className="col-md-4">
-        <label htmlFor="number" className="form-label">מספר בית:</label>
+        <label htmlFor="number" className="form-label">
+          מספר בית:
+        </label>
         <input
           type="number"
           name="number"
-          className={`form-control ${formik.touched.number && !formik.errors.number ? 'is-valid' : formik.touched.number && formik.errors.number ? 'is-invalid' : ''}`}
+          className={`form-control ${
+            formik.touched.number && !formik.errors.number
+              ? "is-valid"
+              : formik.touched.number && formik.errors.number
+              ? "is-invalid"
+              : ""
+          }`}
           value={formik.values.number}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -276,7 +406,6 @@ export default function Register({ onAddUser }) {
           <i className="fas fa-user-plus me-2"></i> נרשם
         </button>
       </div>
-
     </form>
   );
 }
