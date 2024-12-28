@@ -1,8 +1,11 @@
 import "./App.css";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
-import Home from "./Pages/Home";
+import Profile from "./Pages/Pofile";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
+import EditDetails from "./Pages/EditDetails";
+import SystemAdmin from "./Pages/SystemAdmin";
+
 import { useEffect, useState } from "react";
 
 function App() {
@@ -65,19 +68,83 @@ function App() {
     sessionStorage.setItem("user", JSON.stringify(user));
   }, [user]); // when user logs in
 
+  const logoutUser = (email) => {
+    const loggedInUser = JSON.parse(sessionStorage.getItem("user"));
+
+    if (loggedInUser && loggedInUser.email === email) {
+      sessionStorage.removeItem("user");
+      alert("המשתמש התנתק בהצלחה!");
+      setUser(null);
+      navigate("/login");
+    } else {
+      alert("המשתמש לא מחובר או שהמייל שגוי");
+    }
+  };
+
+  const deleteUser = (email) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const updatedUsers = users.filter((user) => user.email !== email);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    alert("המשתמש נמחק בהצלחה");
+  };
+
+  const editUser = (email, updatedUserDetails) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const userIndex = users.findIndex((user) => user.email === email);
+  
+    if (userIndex !== -1) {
+      const updatedUser = {
+        ...users[userIndex],
+        username: updatedUserDetails.username || users[userIndex].username,
+        password: updatedUserDetails.password || users[userIndex].password,
+        passwordConfirm: updatedUserDetails.passwordConfirm || users[userIndex].passwordConfirm,
+        firstName: updatedUserDetails.firstName || users[userIndex].firstName,
+        lastName: updatedUserDetails.lastName || users[userIndex].lastName,
+        dateOfBirth: updatedUserDetails.dateOfBirth || users[userIndex].dateOfBirth,
+        profilePicture: updatedUserDetails.profilePicture || users[userIndex].profilePicture,
+        city: updatedUserDetails.city || users[userIndex].city,
+        street: updatedUserDetails.street || users[userIndex].street,
+        number: updatedUserDetails.number || users[userIndex].number,
+      };
+        users[userIndex] = updatedUser;
+        localStorage.setItem("users", JSON.stringify(users));
+  
+      alert("הפרטים עודכנו בהצלחה");
+    } else {
+      alert("לא נמצאו משתמשים עם המייל הזה");
+    }
+  };
+  
   return (
     <>
-      <h2>המשחק האהוב עליי</h2>
-      <button className="logout-bttn">התנתקות</button>
-      <Link to="/">בית</Link> | <Link to="/login">התחברות</Link> |{" "}
-      <Link to="/register">הרשמה</Link>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light p-3">
+        <div className="container">
+          <div className="navbar-nav me-auto">
+            <Link to="/profile" className="nav-link">
+              <i className="fas fa-user me-2"></i> פרופיל
+            </Link>
+            <Link to="/editDetails" className="nav-link">
+              <i className="fas fa-edit me-2"></i> עריכת פרטים
+            </Link>
+            <Link to="/systemAdmin" className="nav-link">
+              <i className="fas fa-cogs me-2"></i> ניהול
+            </Link>
+            <Link to="/login" className="nav-link">
+              <i className="fas fa-sign-in-alt me-2"></i> התחברות
+            </Link>
+            <Link to="/register" className="nav-link">
+              <i className="fas fa-user-plus me-2"></i> הרשמה
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/register"
-          element={<Register onAddUser={registerUser} />}
-        />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/register" element={<Register onAddUser={registerUser} />} />
         <Route path="/login" element={<Login onLogin={loginUser} />} />
+        <Route path="/editDetails" element={<EditDetails />} />
+        <Route path="/systemAdmin" element={<SystemAdmin />} />
       </Routes>
     </>
   );

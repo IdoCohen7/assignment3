@@ -5,8 +5,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,9 +16,11 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
+
 html {
   height: 100%;
 }
@@ -48,9 +48,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -61,9 +63,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
@@ -73,4 +77,226 @@ button:focus-visible {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+
+/* עיצוב כללי לטופס */
+form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+/* עיצוב שדות טופס תקינים ולא תקינים */
+input.is-valid,
+select.is-valid {
+  border-color: #28a745;
+  background-color: #d4edda;
+}
+
+input.is-invalid,
+select.is-invalid {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.invalid-feedback {
+  font-size: 0.875rem;
+  color: #dc3545;
+}
+
+/* עיצוב כללי לכותרות של השדות */
+label.form-label {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* כפתור שלח */
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* עיצוב של שדות קלט (input) */
+input.form-control {
+  border-radius: 5px;
+}
+
+/* עיצוב לכל השדות בתבנית של 12 עמודות */
+.col-md-4 {
+  margin-bottom: 1rem;
+}
+
+/* עיצוב שדות טופס שנבחרו */
+input:focus,
+select:focus {
+  border-color: #0056b3;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* עיצוב הכפתור */
+.logout-btn {
+  position: fixed;
+  /* מאפשר למקם את הכפתור באופן קבוע על המסך */
+  top: 10px;
+  /* מרחק מהקצה העליון */
+  left: 10px;
+  /* מרחק מהקצה השמאלי */
+  z-index: 1000;
+  /* לוודא שהכפתור יישאר מעל אלמנטים אחרים */
+  padding: 10px 20px;
+  /* מרווח פנימי בכפתור */
+  font-size: 16px;
+  /* גודל טקסט */
+  border-radius: 25px;
+  /* פינות מעוגלות */
+}
+
+/* עיצוב כפתור במעבר עכבר */
+.logout-btn:hover {
+  opacity: 0.8;
+  /* שינוי שקיפות בהעברה מעל הכפתור */
+}
+
+/* עיצוב האייקון */
+.logout-btn i {
+  font-size: 18px;
+  /* גודל האייקון */
+}
+
+.navbar {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.nav-link {
+  color: #333;
+  font-size: 16px;
+  margin-right: 15px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #007bff;
+}
+
+.nav-link i {
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+.profile-card {
+  width: 350px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  direction: rtl;
+  /* ממקם את התוכן מימין לשמאל */
+
+  text-align: right;
+  /* ממקם את הטקסט מימין */
+
+}
+
+.profile-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-picture {
+  width: 200Px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.profile-header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-details p {
+  font-size: 1rem;
+  margin: 5px 0;
+  color: #555;
+}
+
+.profile-details strong {
+  font-weight: bold;
+}
+
+.game-link {
+  margin-top: 20px;
+  text-align: center;
+  /* ממרכז את הקישור למשחק */
+}
+
+.btn-game {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.btn-game:hover {
+  background-color: #45a049;
+  color: #0a1fda;
+}
+
+.buttons {
+  margin-top: 20px;
+  text-align: center;
+  /* ממרכז את הכפתורים */
+}
+
+.buttons .btn {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #d32f2f;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+.btn-danger i {
+  border: 1px solid red;
+}
+.btn-danger i {
+  font-size: 1.5rem;
 }
