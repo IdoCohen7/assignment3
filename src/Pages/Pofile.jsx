@@ -1,8 +1,29 @@
 import { useNavigate } from "react-router-dom";
 import propTypes from "prop-types";
+import { useEffect, useState } from "react";
 
 export default function Profile({ user, logoutUser }) {
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
+
+  const loadImageFromLocalStorage = (email) => {
+    const base64String = localStorage.getItem(email);
+    if (base64String) {
+      return `data:image/jpeg;base64,${base64String}`;
+    }
+    return null; // if no image in local storage
+  };
+
+  const handleLogout = () => {
+    logoutUser(user.email);
+  };
+
+  useEffect(() => {
+    if (user && user.email) {
+      const img = loadImageFromLocalStorage(user.email);
+      setImage(img);
+    }
+  }, [user]); // should run only when user changes
 
   if (!user) {
     return (
@@ -12,17 +33,13 @@ export default function Profile({ user, logoutUser }) {
     );
   }
 
-  const handleLogout = () => {
-    logoutUser(user.email);
-  };
-
   return (
     <div className="profile-card">
       <div className="profile-header">
         <img
-          src={user?.profilePicture || "/default-image.png"}
+          src={image || "/default-image.png"} // using default image if no image in state
           alt="Profile"
-          className="profile-picture"
+          className="profile-picture-comp"
         />
         <h1>שלום {user.username}!</h1>
       </div>
@@ -42,15 +59,15 @@ export default function Profile({ user, logoutUser }) {
           {user.street + " " + user.number + ", " + user.city}
         </p>
       </div>
-      {/* קישור למשחק */}
+      {/* Game link */}
       <div className="game-link">
         <a
-          href="https://www.izzygames.com/fireboy-and-watergirl-1-t3534.html?gad_source=1&gclid=Cj0KCQiAvbm7BhC5ARIsAFjwNHt5lvUuLpq5UINpqpLZxIFmBUlRaguJiGhuPnMMPGS3M3lMl2lfnhAaAmzAEALw_wcB"
+          href="https://www.izzygames.com/fireboy-and-watergirl-1-t3534.html"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-game" /* הכפתור שכולל את התמונה כרקע */
+          className="btn-game"
         >
-          <span>קישור למשחק האהוב עלינו</span> {/* טקסט הכפתור */}
+          <span>קישור למשחק האהוב עלינו</span>
         </a>
       </div>
 
@@ -73,6 +90,6 @@ export default function Profile({ user, logoutUser }) {
 }
 
 Profile.propTypes = {
-  user: propTypes.object.isRequired,
+  user: propTypes.object,
   logoutUser: propTypes.func.isRequired,
 };

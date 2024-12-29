@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
 
 export default function EditDetails({ onEdit }) {
-  const { state } = useLocation();
-  const user = state.user;
+  const location = useLocation();
+  const user = location.state?.user; // Use state only for form population.
 
   const validationSchema = Yup.object({
     firstName: Yup.string()
@@ -60,8 +60,24 @@ export default function EditDetails({ onEdit }) {
     },
     validationSchema,
     enableReinitialize: true,
-    onSubmit: (values) => {
-      onEdit({ ...values, id: user.id });
+    onSubmit: async (values) => {
+      try {
+        if (values.profilePicture) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64String = reader.result.split(",")[1];
+            localStorage.setItem(user.email, base64String);
+            values.profilePicture = `data:image/jpeg;base64,${base64String}`;
+            onEdit({ ...values, id: user.id });
+          };
+          reader.readAsDataURL(values.profilePicture);
+        } else {
+          onEdit({ ...values, id: user.id });
+        }
+        // eslint-disable-next-line no-unused-vars
+      } catch (error) {
+        alert("Failed to save profile picture");
+      }
     },
   });
 

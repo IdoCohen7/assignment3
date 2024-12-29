@@ -6,16 +6,15 @@ import Login from "./Pages/Login";
 import EditDetails from "./Pages/EditDetails";
 import SystemAdmin from "./Pages/SystemAdmin";
 import { v4 as uuidv4 } from "uuid";
-
 import { useEffect, useState } from "react";
 
 function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userList, setList] = useState(() => {
-    // יצירת משתמש אדמין עם UUID חדש
+    // create admin user
     const adminUser = {
-      id: uuidv4(), // יצירת ID ייחודי בעזרת UUID
+      id: uuidv4(),
       username: "admin",
       password: "ad1234321!aD",
       email: "admin@gmail.com",
@@ -29,7 +28,7 @@ function App() {
       passwordConfirm: "ad1234321!aD",
     };
 
-    // יצירת משתמשים נוספים (לא אדמין)
+    // create default users
     const defaultUsers = [
       {
         id: uuidv4(),
@@ -39,7 +38,7 @@ function App() {
         firstName: "עידו",
         lastName: "כהן",
         dateOfBirth: "1990-05-15",
-        city: "חדרה", // עיר עידו
+        city: "חדרה",
         street: "דיזנגוף",
         number: 10,
         profilePicture: null,
@@ -53,7 +52,7 @@ function App() {
         firstName: "איה",
         lastName: "בראונשטיין",
         dateOfBirth: "1985-11-23",
-        city: "אלפי מנשה", // עיר איה
+        city: "אלפי מנשה",
         street: "הכרמל",
         number: 5,
         profilePicture: null,
@@ -67,7 +66,7 @@ function App() {
         firstName: "עופרי",
         lastName: "רהט",
         dateOfBirth: "1992-08-30",
-        city: "תל מונד", // עיר עופרי
+        city: "תל מונד",
         street: "הכותל",
         number: 20,
         profilePicture: null,
@@ -75,16 +74,16 @@ function App() {
       },
     ];
 
-    // בדיקה אם כבר יש משתמשים, אם לא, נוסיף את המשתמש האדמין ומשתמשים נוספים
+    // Check if there are existing users in the local storage
     const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
     if (existingUsers.length === 0) {
-      // אם אין משתמשים, נוסיף את כל המשתמשים כולל אדמין ומשתמשים נוספים
+      // If no users exist, create the default users
       const allUsers = [adminUser, ...defaultUsers];
-      localStorage.setItem("users", JSON.stringify(allUsers)); // שומר את כל המשתמשים ב-localStorage
-      return allUsers; // מחזיר את כל המשתמשים כסטייט
+      localStorage.setItem("users", JSON.stringify(allUsers)); // Save the default users to the local storage
+      return allUsers; // Return the default users
     }
 
-    return existingUsers; // אם כבר יש משתמשים, מחזיר את הרשימה הקיימת
+    return existingUsers; // Return the existing users
   });
 
   const registerUser = (newUser) => {
@@ -97,10 +96,13 @@ function App() {
       return;
     }
     const userWithId = { ...newUser, id: uuidv4() };
-    console.log("userWithId: ", userWithId);
+
     setList([...userList, userWithId]);
     alert("המשתמש נוצר בהצלחה");
-    navigate("/login");
+
+    // automatically log in the new user
+    setUser(userWithId);
+    navigate("/profile");
   };
 
   const loginUser = (user) => {
@@ -146,11 +148,9 @@ function App() {
   const deleteUser = (email) => {
     const remainingdUsers = userList.filter((user) => user.email !== email);
     setList(remainingdUsers);
-    alert("המשתמש נמחק בהצלחה");
   };
 
   const editUser = (editedUser) => {
-    console.log("editedUser: ", editedUser);
     // Find the index of the user by ID
     const userIndex = userList.findIndex((u) => u.id === editedUser.id);
 
@@ -177,9 +177,11 @@ function App() {
 
       // Update the state with the modified user list
       setList([...userList]);
-      setUser(updatedUser);
 
-      console.log("updated userList: ", userList);
+      // Only edit current logged in user if not admin
+      if (user.username !== "admin") {
+        setUser(updatedUser);
+      }
 
       alert("הפרטים עודכנו בהצלחה");
       if (user.username === "admin") {

@@ -1,7 +1,7 @@
 import propTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-export default function SystemAdmin({ list, logoutUser, onDelete }) {
+export default function SystemAdmin({ list, onDelete, logoutUser }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,6 +15,7 @@ export default function SystemAdmin({ list, logoutUser, onDelete }) {
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
+              <th>תמונת פרופיל</th>
               <th>שם משתמש</th>
               <th>שם פרטי</th>
               <th>שם משפחה</th>
@@ -27,6 +28,17 @@ export default function SystemAdmin({ list, logoutUser, onDelete }) {
           <tbody>
             {list.map((user) => (
               <tr key={user.id}>
+                <td>
+                  {user.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt="Profile"
+                      className="profile-picture"
+                    />
+                  ) : (
+                    "אין תמונה"
+                  )}
+                </td>
                 <td>{user.username}</td>
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
@@ -37,7 +49,13 @@ export default function SystemAdmin({ list, logoutUser, onDelete }) {
                   <button
                     className="btn btn-primary me-2"
                     onClick={() => {
-                      navigate("/editDetails", { state: { user } });
+                      if (user.email === "admin@gmail.com") {
+                        alert("לא ניתן לערוך את המנהל המערכתי");
+                        return;
+                      }
+                      navigate("/editDetails", {
+                        state: { user: user }, // Pass the current user to the next page
+                      });
                     }}
                   >
                     <i className="bi bi-pencil"></i>
@@ -45,11 +63,12 @@ export default function SystemAdmin({ list, logoutUser, onDelete }) {
                   <button
                     className="btn btn-danger"
                     onClick={() => {
-                      if (user.email == "admin@gmail.com") {
-                        alert("לא ניתן למחוק את המנהל המערכתי");
-                        return;
+                      if (confirm("האם אתה בטוח שברצונך למחוק משתמש זה?")) {
+                        // Remove profile picture from local storage
+                        localStorage.removeItem(user.email);
+                        // Call the onDelete function to remove the user
+                        onDelete(user.email);
                       }
-                      onDelete(user.email);
                     }}
                   >
                     <i className="bi bi-trash"></i>
@@ -69,6 +88,6 @@ export default function SystemAdmin({ list, logoutUser, onDelete }) {
 
 SystemAdmin.propTypes = {
   list: propTypes.array.isRequired,
-  logoutUser: propTypes.func.isRequired,
   onDelete: propTypes.func.isRequired,
+  logoutUser: propTypes.func.isRequired,
 };

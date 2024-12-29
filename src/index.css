@@ -321,3 +321,17 @@ button:active {
 .table th {
   background-color: #f8f9fa; /* Optional: Add a background color to the header */
 }
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-picture-comp {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+}

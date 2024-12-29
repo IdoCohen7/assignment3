@@ -1,7 +1,6 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import propTypes from "prop-types";
-import { useEffect } from "react";
 
 export default function Register({ onAddUser }) {
   const validationSchema = Yup.object({
@@ -40,11 +39,6 @@ export default function Register({ onAddUser }) {
         const age = new Date(today - birthDate).getUTCFullYear() - 1970;
         return age >= 18 && age < 120;
       }),
-    profilePicture: Yup.mixed()
-      .nullable()
-      .test("fileType", "הקובץ חייב להיות jpg או jpeg", (value) => {
-        return !value || ["image/jpeg", "image/jpg"].includes(value.type);
-      }),
     city: Yup.string().required("שדה חובה"),
     street: Yup.string()
       .matches(
@@ -56,6 +50,11 @@ export default function Register({ onAddUser }) {
       .min(0, "מספר הבית לא יכול להיות שלילי")
       .typeError("המספר חייב להיות ערך נומרי")
       .required("שדה חובה"),
+    profilePicture: Yup.mixed()
+      .nullable()
+      .test("fileType", "הקובץ חייב להיות jpg או jpeg", (value) => {
+        return !value || ["image/jpeg", "image/jpg"].includes(value?.type);
+      }),
   });
 
   const formik = useFormik({
@@ -73,39 +72,49 @@ export default function Register({ onAddUser }) {
       number: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      onAddUser(values);
+    onSubmit: async (values) => {
+      try {
+        let profilePictureKey = null;
+
+        // making sure this is not overriding an exisiting image
+        if (values.profilePicture && !localStorage.getItem(values.email)) {
+          profilePictureKey = await saveImageToLocalStorage(
+            values.profilePicture,
+            values.email
+          );
+        }
+
+        // createing user data
+        const userData = {
+          ...values,
+          profilePictureKey, // saving profile pic key
+        };
+
+        // calling register user function
+        onAddUser(userData);
+      } catch (error) {
+        console.error("Error saving profile picture:", error);
+      }
     },
   });
 
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // יצירת URL מקומי לתמונה
-      const imageUrl = URL.createObjectURL(file);
-      formik.setFieldValue("profilePicture", file); // שמירה בערך של Formik
+  const saveImageToLocalStorage = (file, email) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-      // שמירת התמונה בזיכרון המקומי
-      localStorage.setItem("profilePicture", imageUrl);
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1]; // removing the prefix
+        localStorage.setItem(email, base64String); // saving the image in local storage
+        resolve(email); // resolving the promise with the email
+      };
 
-      // הצגת התמונה בתצוגה
-      const imgElement = document.getElementById("profileImagePreview");
-      imgElement.src = imageUrl;
-    }
+      reader.onerror = () => {
+        reject("Failed to read the file");
+      };
+
+      reader.readAsDataURL(file); // reading the file
+    });
   };
-
-  const loadProfilePicture = () => {
-    const storedImageUrl = localStorage.getItem("profilePicture");
-    if (storedImageUrl) {
-      const imgElement = document.getElementById("profileImagePreview");
-      imgElement.src = storedImageUrl;
-    }
-  };
-
-  // לקרוא את הפונקציה loadProfilePicture כשנטען הדף
-  useEffect(() => {
-    loadProfilePicture();
-  }, []);
 
   return (
     <div className="container mt-5">
@@ -134,7 +143,6 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.email}</div>
           )}
         </div>
-
         <div className="col-md-4">
           <label htmlFor="username" className="form-label">
             שם משתמש:
@@ -157,13 +165,7 @@ export default function Register({ onAddUser }) {
           {formik.touched.username && formik.errors.username && (
             <div className="invalid-feedback">{formik.errors.username}</div>
           )}
-          {formik.touched.username &&
-            !formik.errors.username &&
-            !formik.values.username && (
-              <div className="valid-feedback">Looks good!</div>
-            )}
         </div>
-
         <div className="col-md-4">
           <label htmlFor="password" className="form-label">
             סיסמה:
@@ -187,7 +189,6 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.password}</div>
           )}
         </div>
-
         <div className="col-md-4">
           <label htmlFor="passwordConfirm" className="form-label">
             אישור סיסמה:
@@ -237,7 +238,6 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.firstName}</div>
           )}
         </div>
-
         <div className="col-md-4">
           <label htmlFor="lastName" className="form-label">
             שם משפחה:
@@ -261,7 +261,6 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.lastName}</div>
           )}
         </div>
-
         <div className="col-md-4">
           <label htmlFor="dateOfBirth" className="form-label">
             תאריך לידה:
@@ -285,44 +284,6 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.dateOfBirth}</div>
           )}
         </div>
-
-        <div className="col-md-4">
-          <label htmlFor="profilePicture" className="form-label">
-            תמונת פרופיל:
-          </label>
-          <input
-            type="file"
-            name="profilePicture"
-            className={`form-control ${
-              formik.touched.profilePicture && !formik.errors.profilePicture
-                ? "is-valid"
-                : formik.touched.profilePicture && formik.errors.profilePicture
-                ? "is-invalid"
-                : ""
-            }`}
-            onChange={handleProfilePictureChange}
-            id="profilePicture"
-          />
-          {formik.touched.profilePicture && formik.errors.profilePicture && (
-            <div className="invalid-feedback">
-              {formik.errors.profilePicture}
-            </div>
-          )}
-
-          {/* הצגת התמונה */}
-          <img
-            id="profileImagePreview"
-            alt="Profile Preview"
-            className="img-fluid"
-          />
-
-          {formik.touched.profilePicture && formik.errors.profilePicture && (
-            <div className="invalid-feedback">
-              {formik.errors.profilePicture}
-            </div>
-          )}
-        </div>
-
         <div className="col-md-4">
           <label htmlFor="city" className="form-label">
             עיר:
@@ -384,13 +345,12 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.street}</div>
           )}
         </div>
-
         <div className="col-md-4">
           <label htmlFor="number" className="form-label">
             מספר בית:
           </label>
           <input
-            type="number"
+            type="text"
             name="number"
             className={`form-control ${
               formik.touched.number && !formik.errors.number
@@ -408,12 +368,23 @@ export default function Register({ onAddUser }) {
             <div className="invalid-feedback">{formik.errors.number}</div>
           )}
         </div>
-
-        <div className="col-12">
-          <button type="submit" className="btn btn-primary">
-            <i className="fas fa-user-plus me-2"></i> נרשם
-          </button>
+        <div className="col-md-4">
+          <label htmlFor="profilePicture" className="form-label">
+            תמונת פרופיל:
+          </label>
+          <input
+            type="file"
+            name="profilePicture"
+            className="form-control"
+            onChange={(e) =>
+              formik.setFieldValue("profilePicture", e.target.files[0])
+            }
+            id="profilePicture"
+          />
         </div>
+        <button type="submit" className="btn btn-primary">
+          הרשמה
+        </button>
       </form>
     </div>
   );
